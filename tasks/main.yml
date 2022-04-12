@@ -1,0 +1,10 @@
+---
+# tasks file for ansible-ssl-certificates
+- include: certificate-folder.yml
+- include: generate-csr.yml
+- include: generate-certificate-selfsigned.yml
+  when: certificate_type == "selfsigned" 
+- include: generate-ca.yml
+  when: certificate_type == "ownca" 
+- include: generate-certificate-with-ca.yml
+  when: certificate_type == "ownca" 

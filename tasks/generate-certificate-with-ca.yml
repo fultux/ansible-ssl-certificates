@@ -1,0 +1,13 @@
+---
+- name: Sign certificate with our CA
+  openssl_certificate:
+    path: "{{ cert_path }}/{{ COMMON_NAME }}.crt"
+    csr_path: "{{ cert_path }}/{{ COMMON_NAME }}.csr"
+    provider: ownca
+    ownca_path: "{{ cert_path }}/ca-certificate.pem"
+    ownca_privatekey_path: "{{ cert_path }}/ca-certificate.key"
+    ownca_privatekey_passphrase: "{{ secret_ca_passphrase }}"
+    ownca_not_after: +365d  # valid for one year
+    ownca_not_before: "-1d"  # valid since yesterday
+  run_once: true
+  register: certificate

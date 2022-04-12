@@ -1,0 +1,20 @@
+- name: Create private key for new certificate 
+  openssl_privatekey:
+    path: "{{ cert_path }}/{{ COMMON_NAME }}.key"
+  run_once: true
+
+- name: Create certificate signing request (CSR) for new certificate
+  openssl_csr:
+    privatekey_path: "{{ cert_path }}/{{ COMMON_NAME }}.key"
+    path: "{{ cert_path }}/{{ COMMON_NAME }}.csr"
+    country_name: "{{ COUNTRY }}"
+    organization_name:  "{{ O }}"
+    organizational_unit_name: "{{ OU }}"
+    locality_name: "{{ CITY }}"
+    state_or_province_name: "{{ STATE }}"
+    common_name: "{{ COMMON_NAME }}"
+    subject_alt_name: "{{ item.value | map('regex_replace', '^', 'DNS:') | list }}"
+  with_dict:
+    dns_server: "{{ sans }}"
+  run_once: true
+  register: csr

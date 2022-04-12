@@ -1,0 +1,7 @@
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{ cert_path }}/{{ COMMON_NAME }}.crt"
+    privatekey_path: "{{ cert_path }}/{{ COMMON_NAME }}.key"
+    csr_path: "{{ cert_path }}/{{ COMMON_NAME }}.csr"
+    provider: selfsigned
+  run_once: true

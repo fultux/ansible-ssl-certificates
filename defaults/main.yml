@@ -1,0 +1,2 @@
+---
+certificate_type: "selfsigned" #Can be either selfsigned or ownca

@@ -1,0 +1,5 @@
+- name: create certificate folder
+  file:
+    path: "{{ cert_path }}"
+    mode: '0755'
+    state: directory

@@ -1,0 +1,28 @@
+- name: Create private key with password protection
+  openssl_privatekey:
+    path: "{{ cert_path }}/ca-certificate.key"
+    cipher: aes256
+    passphrase: "{{ secret_ca_passphrase }}"
+
+- name: Create certificate signing request (CSR) for CA certificate
+  openssl_csr:
+    privatekey_path: "{{ cert_path }}/ca-certificate.key"
+    path: "{{ cert_path }}/ca-certificate.csr"
+    privatekey_passphrase: "{{ secret_ca_passphrase }}"
+    common_name: "{{ ca_common_name }}"
+    use_common_name_for_san: false  # since we do not specify SANs, don't use CN as a SAN
+    basic_constraints:
+      - 'CA:TRUE'
+    basic_constraints_critical: yes
+    key_usage:
+      - keyCertSign
+    key_usage_critical: true
+  register: ca_csr
+
+- name: Create self-signed CA certificate from CSR
+  openssl_certificate:
+    path: "{{ cert_path }}/ca-certificate.pem"
+    csr_path: "{{ cert_path }}/ca-certificate.csr"
+    privatekey_path: "{{ cert_path }}/ca-certificate.key"
+    privatekey_passphrase: "{{ secret_ca_passphrase }}"
+    provider: selfsigned
